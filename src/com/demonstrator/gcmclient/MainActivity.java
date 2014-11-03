@@ -8,16 +8,25 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -152,6 +161,7 @@ public class MainActivity extends Activity {
 	public void onClick(final View view) {
 	    if (view == findViewById(R.id.send)) {
 	    	mDisplay.setText("onClick()");
+	    	System.out.println("Send button pressed");
 	        new AsyncTask<Void, Void, String>() {
 	            @Override
 	            protected String doInBackground(Void... params) {
@@ -175,9 +185,67 @@ public class MainActivity extends Activity {
 	                mDisplay.setText(msg + "\n");
 	            }
 	        }.execute(null, null, null);
-	    } else //if (view == findViewById(R.id.clear)) 
+	    } else if (view == findViewById(R.id.notify)) 
 	    {
-	        mDisplay.setText("");
+	        //show notification with chosen parameters
+	    	//get UI input
+	    	CheckBox cbsetAutoCancel = (CheckBox)findViewById(R.id.cbsetAutoCancel);
+	    	CheckBox cbsetContentInfo = (CheckBox)findViewById(R.id.cbsetContentInfo);
+	    	CheckBox cbsetContentIntent = (CheckBox)findViewById(R.id.cbsetContentIntent);
+	    	CheckBox cbsetContentText = (CheckBox)findViewById(R.id.cbsetContentText);
+	    	CheckBox cbsetContentTitle = (CheckBox)findViewById(R.id.cbsetContentTitle);
+	    	CheckBox cbsetNumber = (CheckBox)findViewById(R.id.cbsetNumber);
+	    	CheckBox cbsetOngoing = (CheckBox)findViewById(R.id.cbsetOngoing);
+	    	CheckBox cbsetAction = (CheckBox)findViewById(R.id.cbsetAction);
+	    	CheckBox cbsetStyle = (CheckBox)findViewById(R.id.cbsetStyle);
+	    	CheckBox cbsetSubtext = (CheckBox)findViewById(R.id.cbsetSubtext);
+	    	CheckBox cbsetTicker = (CheckBox)findViewById(R.id.cbsetTicker);
+	    	RadioButton rbsmallIcon = (RadioButton)findViewById(R.id.rbsetSmallIcon);
+	    	RadioButton rblargeIcon = (RadioButton)findViewById(R.id.rbsetLargeIcon);
+	    	
+
+	        NotificationManager mNotificationManager = (NotificationManager)
+	                this.getSystemService(Context.NOTIFICATION_SERVICE);
+	    	
+	    	PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+	                new Intent(this, MainActivity.class), 0);
+	    	
+	    	NotificationCompat.Builder mBuilder =
+	                new NotificationCompat.Builder(this);
+	    	Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+	    	
+	        if (cbsetAction.isChecked())
+	        {
+		    	mBuilder.addAction(R.drawable.ic_launcher , "<Action 1>", contentIntent);
+		    	mBuilder.addAction(R.drawable.ic_launcher , "<Action 2>", contentIntent);
+		    	mBuilder.addAction(R.drawable.ic_launcher , "<Action 3>", contentIntent);
+	        }
+	    	if (cbsetAutoCancel.isChecked())
+	    		mBuilder.setAutoCancel(true);
+	    	if (cbsetContentInfo.isChecked())
+	    		mBuilder.setContentInfo("<ContentInfo>");
+	    	if (cbsetContentIntent.isChecked())
+	    		mBuilder.setContentIntent(contentIntent);
+	        if (cbsetContentText.isChecked())
+	        	mBuilder.setContentText("<ContextText>");
+	        if (cbsetContentTitle.isChecked())
+	        	mBuilder.setContentTitle("<ContentTitle>");
+	        if (cbsetNumber.isChecked())
+	        	mBuilder.setNumber(42);
+	    	if (cbsetOngoing.isChecked())
+	    		mBuilder.setOngoing(true);
+	        if (cbsetStyle.isChecked())
+	        	mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText("<BigText>"));
+	        if (cbsetSubtext.isChecked())
+	        	mBuilder.setSubText("<SubText>");
+	        if (cbsetTicker.isChecked())
+	        	mBuilder.setTicker("<Ticker>");
+	        
+	        if (rbsmallIcon.isChecked())
+	    		mBuilder.setSmallIcon(R.drawable.ic_launcher);
+	    	else
+	    		mBuilder.setLargeIcon(bm);
+	    	mNotificationManager.notify(42, mBuilder.build());
 	    }
 	}
 	

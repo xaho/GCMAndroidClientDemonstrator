@@ -53,11 +53,29 @@ public class GcmIntentService extends IntentService {
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 // This loop represents the service doing some work.
-
-            	
+            	String type = intent.getStringExtra("Type");
+            	if (type != null)
+            	{
+	            	switch (type)
+	            	{
+	            	case "Regular":
+	                    sendNotification("Received regular: " + extras.toString());
+	            		break;
+	            	case "Collapsible":
+	                    sendNotification("Received collapsible: " + extras.toString());
+	            		break;
+	            	case "NotificationKey":
+	            		sendNotification("Received NotificationKey: " + extras.toString());
+	            		break;
+	        		default:
+	                    sendNotification("Received: " + extras.toString());
+	                    break;
+	            	}
+            	}
+            	else
+            		sendNotification("Received: "+ extras.toString());
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification("Received: " + extras.toString());
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -74,19 +92,28 @@ public class GcmIntentService extends IntentService {
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
+        //PendingIntent silentIntent = 
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
         .setSmallIcon(R.drawable.ic_launcher)
-        .setContentTitle("GCM Notification")
-        .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(msg))
-        .setContentText(msg);
+        .setContentTitle("ContentTitle: GCM Notification")//("GCM Notification")
+        .setStyle(new NotificationCompat.BigTextStyle().bigText("bigText: " + msg))
+        .setAutoCancel(true)
+        .setOngoing(true)
+        .setContentText("contextText: " + msg);
+        if (msg.contains("Regular"))
+        {
+        	mBuilder.addAction(R.drawable.ic_launcher , "Btn dismiss 1", contentIntent);
+        	mBuilder.addAction(R.drawable.ic_launcher , "Btn dismiss all", contentIntent);
+        }
 
-        mBuilder.setContentIntent(contentIntent);
+        mBuilder.setContentIntent(contentIntent);//What to do when notification itself is clicked
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         Log.i(TAG, "NotificationID: " + Integer.toString(NOTIFICATION_ID));
         NOTIFICATION_ID++;
     }
+    
+    
 
 }
