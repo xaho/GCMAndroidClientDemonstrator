@@ -13,9 +13,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     
-    <permission android:name="com.example.gcm.permission.C2D_MESSAGE"
+    <permission android:name="com.demonstrator.gcmclient.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.demonstrator.gcmclient.permission.C2D_MESSAGE" />
     
     <application
         android:allowBackup="true"
@@ -29,25 +29,12 @@
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.example.gcm" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".NotificationIntentReceiver">
-            <intent-filter>
-                <action android:name="COM.DEMONSTRATOR.GCMCLIENT.DISMISS_ALL"></action>
-                <action android:name="COM.DEMONSTRATOR.GCMCLIENT.DISMISS"></action>
+                <category android:name="com.demonstrator.gcmclient" />
             </intent-filter>
         </receiver>
         <service android:name=".GcmIntentService" />
-        <!-- launchMode="singleTask" might not be appropriate since they: 
-        "result in an interaction model that is likely to be unfamiliar to users and is very different from most other applications." -->
-    
-        <!-- SingleTask: When launching this activity through an intent 
-        doesn't instantiate a new instance but brings activity to front -->
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTask"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

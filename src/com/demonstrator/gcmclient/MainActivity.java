@@ -10,25 +10,16 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -64,9 +55,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		NotificationIntentReceiver.setMainActivityHandler(this);//so NIR can dismiss notification, gcm object is inside MainActivity, not NIR
-		
-    	mDisplay = (TextView) findViewById(R.id.textview);
+		mDisplay = (TextView) findViewById(R.id.textview);
     	
         context = getApplicationContext();
         
@@ -83,7 +72,7 @@ public class MainActivity extends Activity {
             else
             {
             	Log.i(TAG,"Registration ID from preferences=" + regid);
-            	//mDisplay.setText("Registration ID from preferences=" + regid);
+            	mDisplay.setText("Registration ID from preferences=" + regid);
             }
 	    }
 	}
@@ -130,7 +119,7 @@ public class MainActivity extends Activity {
 	        @Override
 	        protected void onPostExecute(String msg) {
 	            Log.i(TAG,msg);
-	        	//mDisplay.setText(msg);
+	        	mDisplay.setText(msg);
 	        }
 	    }.execute(null, null, null);
 	    
@@ -165,44 +154,9 @@ public class MainActivity extends Activity {
 	    editor.commit();
 	}
 	
-	public void dismissNotification(String nKey, String msgID)
-	{		
-    	//Dismiss external
-		new AsyncTask<String, Void, String>() 
-        {
-            @Override
-            protected String doInBackground(String ... params) 
-            {
-                String msg = "";
-                try 
-                {
-            		AtomicInteger msgId = new AtomicInteger();
-            		String id = Integer.toString(msgId.incrementAndGet());
-                    Bundle data = new Bundle();
-                	data.putString("Type","DismissNotification");
-                	Log.i(TAG,"MessageID?: "+params[1]);
-                    data.putString("MessageID", params[1]);
-                    gcm.send(params[0], id, data);
-                    msg = "Sent message";
-                } 
-                catch (IOException ex) 
-                {
-                    msg = "Error :" + ex.getMessage();
-                }
-                return msg;
-            }
-
-            @Override
-            protected void onPostExecute(String msg) {
-                Log.i(TAG,msg);
-            	//mDisplay.setText(msg + "\n");
-            }
-        }.execute(nKey, msgID);
-	}
-	
 	public void onClick(final View view) {
 	    if (view == findViewById(R.id.send)) {//send message to server 
-	    	mDisplay.setText("onClick()");
+	    	//mDisplay.setText("onClick()");
 	    	Log.i(TAG,"Send button pressed");
 	        new AsyncTask<Void, Void, String>() 
 	        {
@@ -233,83 +187,7 @@ public class MainActivity extends Activity {
 	            	//mDisplay.setText(msg + "\n");
 	            }
 	        }.execute(null, null, null);
-	    } else if (view == findViewById(R.id.notify)) //if notify button is pressed
-	    {
-	        //show notification with chosen parameters
-	    	//get UI input
-	    	CheckBox cbsetAutoCancel = (CheckBox)findViewById(R.id.cbsetAutoCancel);
-	    	CheckBox cbsetContentInfo = (CheckBox)findViewById(R.id.cbsetContentInfo);
-	    	CheckBox cbsetContentIntent = (CheckBox)findViewById(R.id.cbsetContentIntent);
-	    	CheckBox cbsetContentText = (CheckBox)findViewById(R.id.cbsetContentText);
-	    	CheckBox cbsetContentTitle = (CheckBox)findViewById(R.id.cbsetContentTitle);
-	    	CheckBox cbsetDeleteIntent = (CheckBox)findViewById(R.id.cbsetDeleteIntent);
-	    	CheckBox cbsetNumber = (CheckBox)findViewById(R.id.cbsetNumber);
-	    	CheckBox cbsetOngoing = (CheckBox)findViewById(R.id.cbsetOngoing);
-	    	CheckBox cbsetAction = (CheckBox)findViewById(R.id.cbsetAction);
-	    	CheckBox cbsetShowWhen = (CheckBox)findViewById(R.id.cbsetShowWhen);
-	    	CheckBox cbsetStyle = (CheckBox)findViewById(R.id.cbsetStyle);
-	    	CheckBox cbsetSubtext = (CheckBox)findViewById(R.id.cbsetSubtext);
-	    	CheckBox cbsetTicker = (CheckBox)findViewById(R.id.cbsetTicker);
-	    	RadioButton rbsmallIcon = (RadioButton)findViewById(R.id.rbsetSmallIcon);
-	    	RadioButton rblargeIcon = (RadioButton)findViewById(R.id.rbsetLargeIcon);
-	    	
-
-	        NotificationManager mNotificationManager = (NotificationManager)
-	                this.getSystemService(Context.NOTIFICATION_SERVICE);
-	    	
-	    	PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-	                new Intent(this, MainActivity.class), 0);
-	    	
-	    	NotificationCompat.Builder mBuilder =
-	                new NotificationCompat.Builder(this);
-	    	Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-	    	
-	    	Intent dismissAll = new Intent();
-	    	dismissAll.setAction("COM.DEMONSTRATOR.GCMCLIENT.DISMISS_ALL");
-	    	PendingIntent pendingIntentAll = PendingIntent.getBroadcast(this, 12345, dismissAll, PendingIntent.FLAG_UPDATE_CURRENT);
-
-	    	Intent dismissLocal = new Intent();
-	    	dismissLocal.setAction("COM.DEMONSTRATOR.GCMCLIENT.DISMISS");
-	    	PendingIntent pendingIntentLocal = PendingIntent.getBroadcast(this, 12345, dismissLocal, PendingIntent.FLAG_UPDATE_CURRENT);
-	    	
-	    	//add all selected options to notification
-	        if (cbsetAction.isChecked())
-	        {
-		    	mBuilder.addAction(R.drawable.minus , "<Btn 1>", pendingIntentAll);
-		    	mBuilder.addAction(R.drawable.plus , "<Btn 2>", pendingIntentLocal);
-		    	//mBuilder.addAction(R.drawable.ic_launcher , "<Btn 3>", contentIntent);
-	        }
-	    	if (cbsetAutoCancel.isChecked())//
-	    		mBuilder.setAutoCancel(true);
-	    	if (cbsetContentInfo.isChecked())
-	    		mBuilder.setContentInfo("<ContentInfo>");
-	    	if (cbsetContentIntent.isChecked())
-	    		mBuilder.setContentIntent(contentIntent);
-	        if (cbsetContentText.isChecked())
-	        	mBuilder.setContentText("<ContextText>");
-	        if (cbsetContentTitle.isChecked())
-	        	mBuilder.setContentTitle("<ContentTitle>");
-	        //if (cbsetDeleteIntent.isChecked())
-	        	//mBuilder.setDeleteIntent();//this is not called when notification is cancelled with .cancel(...), not sure what happens 
-	        if (cbsetNumber.isChecked())
-	        	mBuilder.setNumber(42);
-	    	if (cbsetOngoing.isChecked())
-	    		mBuilder.setOngoing(true);
-	    	if (cbsetShowWhen.isChecked())
-	    		mBuilder.setShowWhen(false);
-	        if (cbsetStyle.isChecked())
-	        	mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText("<BigText>"));
-	        if (cbsetSubtext.isChecked())
-	        	mBuilder.setSubText("<SubText>");
-	        if (cbsetTicker.isChecked())
-	        	mBuilder.setTicker("<Ticker>");
-	        
-	        if (rbsmallIcon.isChecked())
-	    		mBuilder.setSmallIcon(R.drawable.ic_launcher);
-	    	else
-	    		mBuilder.setLargeIcon(bm);
-	    	mNotificationManager.notify(42, mBuilder.build());
-	    }
+	    } 
 	}
 	
 	// You need to do the Play Services APK check here too.

@@ -413,30 +413,12 @@ containing a value of this type.
         public static final int powered_by_google_light=0x7f020024;
     }
     public static final class id {
-        public static final int action_settings=0x7f07002c;
-        public static final int action_view_log=0x7f07002d;
+        public static final int action_settings=0x7f070017;
         public static final int book_now=0x7f070010;
         public static final int buyButton=0x7f07000a;
         public static final int buy_now=0x7f07000f;
         public static final int buy_with_google=0x7f07000e;
-        public static final int cbsetAction=0x7f070021;
-        public static final int cbsetAutoCancel=0x7f070016;
-        public static final int cbsetContentInfo=0x7f070017;
-        public static final int cbsetContentIntent=0x7f070019;
-        public static final int cbsetContentText=0x7f07001a;
-        public static final int cbsetContentTitle=0x7f07001c;
-        public static final int cbsetDeleteIntent=0x7f070022;
-        public static final int cbsetNumber=0x7f070023;
-        public static final int cbsetOngoing=0x7f070024;
-        public static final int cbsetShowWhen=0x7f070025;
-        public static final int cbsetStyle=0x7f070026;
-        public static final int cbsetSubtext=0x7f070027;
-        public static final int cbsetTicker=0x7f070029;
         public static final int classic=0x7f070011;
-        public static final int etsetContentInfo=0x7f070018;
-        public static final int etsetContentText=0x7f07001b;
-        public static final int etsetContentTitle=0x7f07001d;
-        public static final int etsetSubtext=0x7f070028;
         public static final int grayscale=0x7f070012;
         public static final int holo_dark=0x7f070005;
         public static final int holo_light=0x7f070006;
@@ -445,11 +427,7 @@ containing a value of this type.
         public static final int monochrome=0x7f070013;
         public static final int none=0x7f070000;
         public static final int normal=0x7f070001;
-        public static final int notify=0x7f07002b;
         public static final int production=0x7f070007;
-        public static final int radioGroup1=0x7f07001e;
-        public static final int rbsetLargeIcon=0x7f07001f;
-        public static final int rbsetSmallIcon=0x7f070020;
         public static final int sandbox=0x7f070008;
         public static final int satellite=0x7f070002;
         public static final int scrollView1=0x7f070014;
@@ -457,7 +435,7 @@ containing a value of this type.
         public static final int send=0x7f070015;
         public static final int strict_sandbox=0x7f070009;
         public static final int terrain=0x7f070003;
-        public static final int textview=0x7f07002a;
+        public static final int textview=0x7f070016;
         public static final int wrap_content=0x7f07000d;
     }
     public static final class integer {
@@ -468,13 +446,12 @@ containing a value of this type.
     }
     public static final class menu {
         public static final int main=0x7f0a0000;
-        public static final int main_activity_actions=0x7f0a0001;
     }
     public static final class string {
         public static final int accept=0x7f050002;
         public static final int action_settings=0x7f050025;
-        public static final int action_view_log=0x7f050026;
         public static final int app_name=0x7f050023;
+        public static final int button_send=0x7f050026;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
          */
         public static final int common_android_wear_notification_needs_update_text=0x7f050009;
