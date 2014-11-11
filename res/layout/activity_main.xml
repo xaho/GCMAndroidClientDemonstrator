@@ -6,156 +6,194 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:keepScreenOn="true"
     tools:context="com.demonstrator.gcmclient.MainActivity" >
 
-    <TextView
-        android:id="@+id/textview"
+    <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:text="@string/hello_world"
-        android:visibility="invisible" />
-
-    <CheckBox
-        android:id="@+id/cbsetAutoCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="setAutoCancel" />
+        android:layout_above="@+id/send"
+        android:layout_height="wrap_content" >
 
-    <CheckBox
-        android:id="@+id/cbsetContentInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetAutoCancel"
-        android:text="setContentInfo" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            <CheckBox
+		        android:id="@+id/cbsetAutoCancel"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_alignParentTop="true"
+		        android:text="setAutoCancel" />
+		
+		    <CheckBox
+		        android:id="@+id/cbsetContentInfo"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetAutoCancel"
+		        android:text="setContentInfo" />
+		
+		    <EditText
+		        android:id="@+id/etsetContentInfo"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/cbsetContentInfo"
+		        android:layout_toRightOf="@+id/cbsetContentInfo"
+		        android:visibility="invisible"
+		        android:ems="10" />
+		    
+		     <CheckBox
+		        android:id="@+id/cbsetContentIntent"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetContentInfo"
+		        android:text="setContentIntent" />
+		
+		    <CheckBox
+		        android:id="@+id/cbsetContentText"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:checked="true"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetContentIntent"
+		        android:text="setContentText" />
+		
+		    <EditText
+		        android:id="@+id/etsetContentText"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/cbsetContentText"
+		        android:layout_toRightOf="@+id/cbsetContentText"
+		        android:visibility="invisible"
+		        android:ems="10" />
+		
+		    <CheckBox
+		        android:id="@+id/cbsetContentTitle"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:checked="true"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetContentText"
+		        android:text="setContentTitle" />
+		
+		    <EditText
+		        android:id="@+id/etsetContentTitle"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/cbsetContentTitle"
+		        android:layout_toRightOf="@+id/cbsetContentTitle"
+		        android:visibility="invisible"
+		        android:ems="10" />
+		
+		    <RadioGroup
+		        android:id="@+id/radioGroup1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:layout_below="@+id/cbsetContentTitle">
+		
+		        <RadioButton
+		            android:id="@+id/rbsetLargeIcon"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="setLargeIcon" />
+		
+		        <RadioButton
+		            android:id="@+id/rbsetSmallIcon"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:checked="true"
+		            android:text="setSmallIcon" />
+		    </RadioGroup>
+		
+		    <CheckBox
+		        android:id="@+id/cbsetAction"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/radioGroup1"
+		        android:text="setAction" />
+		    <CheckBox
+		        android:id="@+id/cbsetDeleteIntent"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetAction"
+		        android:text="setDeleteIntent" />
+		    
+		    <CheckBox
+		        android:id="@+id/cbsetNumber"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetDeleteIntent"
+		        android:text="setNumber" />
+		    
+		    <CheckBox
+		        android:id="@+id/cbsetOngoing"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetNumber"
+		        android:text="setOngoing" />
+		     
+		    <CheckBox
+		        android:id="@+id/cbsetShowWhen"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:checked="true"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetOngoing"
+		        android:text="setShowWhen" />
+		    
+		    <CheckBox
+		        android:id="@+id/cbsetStyle"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetShowWhen"
+		        android:text="setStyle (BigTextStyle)" />
+		    
+		    <CheckBox
+		        android:id="@+id/cbsetSubtext"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetStyle"
+		        android:text="setSubtext" />
+		
+		    <EditText
+		        android:id="@+id/etsetSubtext"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/cbsetSubtext"
+		        android:layout_toRightOf="@+id/cbsetSubtext"
+		        android:visibility="invisible"
+		        android:ems="10" />
+		    
+		    <CheckBox
+		        android:id="@+id/cbsetTicker"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetSubtext"
+		        android:text="setTicker" />
+		    
+		    <TextView
+		        android:id="@+id/textview"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/cbsetTicker"
+		        android:text="@string/hello_world"
+		        android:visibility="visible" />
+        </RelativeLayout>
+    </ScrollView>
 
-    <EditText
-        android:id="@+id/etsetContentInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/cbsetContentInfo"
-        android:layout_toRightOf="@+id/cbsetContentInfo"
-        android:ems="10" />
     
-     <CheckBox
-        android:id="@+id/cbsetContentIntent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetContentInfo"
-        android:text="setContentIntent" />
-
-    <CheckBox
-        android:id="@+id/cbsetContentText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetContentIntent"
-        android:text="setContentText" />
-
-    <EditText
-        android:id="@+id/etsetContentText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/cbsetContentText"
-        android:layout_toRightOf="@+id/cbsetContentText"
-        android:ems="10" />
-
-    <CheckBox
-        android:id="@+id/cbsetContentTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetContentText"
-        android:text="setContentTitle" />
-
-    <EditText
-        android:id="@+id/etsetContentTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/cbsetContentTitle"
-        android:layout_toRightOf="@+id/cbsetContentTitle"
-        android:ems="10" />
-
-    <RadioGroup
-        android:id="@+id/radioGroup1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@+id/cbsetContentTitle">
-
-        <RadioButton
-            android:id="@+id/rbsetLargeIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="setLargeIcon" />
-
-        <RadioButton
-            android:id="@+id/rbsetSmallIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="setSmallIcon" />
-    </RadioGroup>
-
-    <CheckBox
-        android:id="@+id/cbsetAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/radioGroup1"
-        android:text="setAction" />
-    
-    <CheckBox
-        android:id="@+id/cbsetNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetAction"
-        android:text="setNumber" />
-    
-    <CheckBox
-        android:id="@+id/cbsetOngoing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetNumber"
-        android:text="setOngoing" />
-    
-    <CheckBox
-        android:id="@+id/cbsetStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetOngoing"
-        android:text="setStyle (BigTextStyle)" />
-    
-    <CheckBox
-        android:id="@+id/cbsetSubtext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetStyle"
-        android:text="setSubtext" />
-
-    <EditText
-        android:id="@+id/etsetSubtext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/cbsetSubtext"
-        android:layout_toRightOf="@+id/cbsetSubtext"
-        android:ems="10" />
-    
-    <CheckBox
-        android:id="@+id/cbsetTicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/cbsetSubtext"
-        android:text="setTicker" />
 
     <Button
         android:id="@+id/send"

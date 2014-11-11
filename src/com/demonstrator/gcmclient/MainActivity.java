@@ -1,6 +1,8 @@
 package com.demonstrator.gcmclient;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,11 +24,11 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -35,7 +37,7 @@ public class MainActivity extends Activity {
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-	
+	public static Map<String,Integer> LUT = new HashMap<String,Integer>();
 	/**
      * Substitute you own sender ID here. This is the project number you got
      * from the API Console, as described in "Getting Started."
@@ -62,6 +64,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		NotificationIntentReceiver.setMainActivityHandler(this);//so NIR can dismiss notification, gcm object is inside MainActivity, not NIR
+		
     	mDisplay = (TextView) findViewById(R.id.textview);
     	
         context = getApplicationContext();
@@ -78,11 +82,12 @@ public class MainActivity extends Activity {
             }
             else
             {
-            	mDisplay.setText("Device registered, registration ID=" + regid);
+            	Log.i(TAG,"Registration ID from preferences=" + regid);
+            	//mDisplay.setText("Registration ID from preferences=" + regid);
             }
 	    }
 	}
-	
+		
 	/**
 	 * Registers the application with GCM servers asynchronously.
 	 * <p>
@@ -99,8 +104,8 @@ public class MainActivity extends Activity {
 	                    gcm = GoogleCloudMessaging.getInstance(context);
 	                }
 	                regid = gcm.register(SENDER_ID);
-	                msg = "Device registered, registration ID=" + regid;
-
+	                msg = "Registration ID from GCM server=" + regid;
+	                Log.i(TAG,msg);
 	                // You should send the registration ID to your server over HTTP,
 	                // so it can use GCM/HTTP or CCS to send messages to your app.
 	                // The request to your server should be authenticated if your app
@@ -124,7 +129,8 @@ public class MainActivity extends Activity {
 
 	        @Override
 	        protected void onPostExecute(String msg) {
-	            mDisplay.append(msg + "\n");
+	            Log.i(TAG,msg);
+	        	//mDisplay.setText(msg);
 	        }
 	    }.execute(null, null, null);
 	    
@@ -137,8 +143,9 @@ public class MainActivity extends Activity {
 	 * using the 'from' address in the message.
 	 */
 	private void sendRegistrationIdToBackend() {
-	    // Your implementation here.
+	    //TODO: Your implementation here.
 		// Manual for the time being
+		
 	}
 	
 	/**
@@ -158,23 +165,63 @@ public class MainActivity extends Activity {
 	    editor.commit();
 	}
 	
+	public void dismissNotification(String nKey, String msgID)
+	{		
+    	//Dismiss external
+		new AsyncTask<String, Void, String>() 
+        {
+            @Override
+            protected String doInBackground(String ... params) 
+            {
+                String msg = "";
+                try 
+                {
+            		AtomicInteger msgId = new AtomicInteger();
+            		String id = Integer.toString(msgId.incrementAndGet());
+                    Bundle data = new Bundle();
+                	data.putString("Type","DismissNotification");
+                	Log.i(TAG,"MessageID?: "+params[1]);
+                    data.putString("MessageID", params[1]);
+                    gcm.send(params[0], id, data);
+                    msg = "Sent message";
+                } 
+                catch (IOException ex) 
+                {
+                    msg = "Error :" + ex.getMessage();
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+                Log.i(TAG,msg);
+            	//mDisplay.setText(msg + "\n");
+            }
+        }.execute(nKey, msgID);
+	}
+	
 	public void onClick(final View view) {
-	    if (view == findViewById(R.id.send)) {
+	    if (view == findViewById(R.id.send)) {//send message to server 
 	    	mDisplay.setText("onClick()");
-	    	System.out.println("Send button pressed");
-	        new AsyncTask<Void, Void, String>() {
+	    	Log.i(TAG,"Send button pressed");
+	        new AsyncTask<Void, Void, String>() 
+	        {
 	            @Override
-	            protected String doInBackground(Void... params) {
+	            protected String doInBackground(Void... params) 
+	            {
 	                String msg = "";
-	                try {
+	                try 
+	                {
 	                    Bundle data = new Bundle();
 	                        data.putString("my_message", "Hello World");
 	                        data.putString("my_action",
-	                                "com.google.android.gcm.demo.app.ECHO_NOW");
+	                                "com.google.android.gcm.demo.app.ECHO_NOW");//(servers response to this message will be an echo)
 	                        String id = Integer.toString(msgId.incrementAndGet());
 	                        gcm.send(SENDER_ID + "@gcm.googleapis.com", id, data);
 	                        msg = "Sent message";
-	                } catch (IOException ex) {
+	                } 
+	                catch (IOException ex) 
+	                {
 	                    msg = "Error :" + ex.getMessage();
 	                }
 	                return msg;
@@ -182,10 +229,11 @@ public class MainActivity extends Activity {
 
 	            @Override
 	            protected void onPostExecute(String msg) {
-	                mDisplay.setText(msg + "\n");
+	                Log.i(TAG,msg);
+	            	//mDisplay.setText(msg + "\n");
 	            }
 	        }.execute(null, null, null);
-	    } else if (view == findViewById(R.id.notify)) 
+	    } else if (view == findViewById(R.id.notify)) //if notify button is pressed
 	    {
 	        //show notification with chosen parameters
 	    	//get UI input
@@ -194,9 +242,11 @@ public class MainActivity extends Activity {
 	    	CheckBox cbsetContentIntent = (CheckBox)findViewById(R.id.cbsetContentIntent);
 	    	CheckBox cbsetContentText = (CheckBox)findViewById(R.id.cbsetContentText);
 	    	CheckBox cbsetContentTitle = (CheckBox)findViewById(R.id.cbsetContentTitle);
+	    	CheckBox cbsetDeleteIntent = (CheckBox)findViewById(R.id.cbsetDeleteIntent);
 	    	CheckBox cbsetNumber = (CheckBox)findViewById(R.id.cbsetNumber);
 	    	CheckBox cbsetOngoing = (CheckBox)findViewById(R.id.cbsetOngoing);
 	    	CheckBox cbsetAction = (CheckBox)findViewById(R.id.cbsetAction);
+	    	CheckBox cbsetShowWhen = (CheckBox)findViewById(R.id.cbsetShowWhen);
 	    	CheckBox cbsetStyle = (CheckBox)findViewById(R.id.cbsetStyle);
 	    	CheckBox cbsetSubtext = (CheckBox)findViewById(R.id.cbsetSubtext);
 	    	CheckBox cbsetTicker = (CheckBox)findViewById(R.id.cbsetTicker);
@@ -214,13 +264,22 @@ public class MainActivity extends Activity {
 	                new NotificationCompat.Builder(this);
 	    	Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 	    	
+	    	Intent dismissAll = new Intent();
+	    	dismissAll.setAction("COM.DEMONSTRATOR.GCMCLIENT.DISMISS_ALL");
+	    	PendingIntent pendingIntentAll = PendingIntent.getBroadcast(this, 12345, dismissAll, PendingIntent.FLAG_UPDATE_CURRENT);
+
+	    	Intent dismissLocal = new Intent();
+	    	dismissLocal.setAction("COM.DEMONSTRATOR.GCMCLIENT.DISMISS");
+	    	PendingIntent pendingIntentLocal = PendingIntent.getBroadcast(this, 12345, dismissLocal, PendingIntent.FLAG_UPDATE_CURRENT);
+	    	
+	    	//add all selected options to notification
 	        if (cbsetAction.isChecked())
 	        {
-		    	mBuilder.addAction(R.drawable.ic_launcher , "<Action 1>", contentIntent);
-		    	mBuilder.addAction(R.drawable.ic_launcher , "<Action 2>", contentIntent);
-		    	mBuilder.addAction(R.drawable.ic_launcher , "<Action 3>", contentIntent);
+		    	mBuilder.addAction(R.drawable.minus , "<Btn 1>", pendingIntentAll);
+		    	mBuilder.addAction(R.drawable.plus , "<Btn 2>", pendingIntentLocal);
+		    	//mBuilder.addAction(R.drawable.ic_launcher , "<Btn 3>", contentIntent);
 	        }
-	    	if (cbsetAutoCancel.isChecked())
+	    	if (cbsetAutoCancel.isChecked())//
 	    		mBuilder.setAutoCancel(true);
 	    	if (cbsetContentInfo.isChecked())
 	    		mBuilder.setContentInfo("<ContentInfo>");
@@ -230,10 +289,14 @@ public class MainActivity extends Activity {
 	        	mBuilder.setContentText("<ContextText>");
 	        if (cbsetContentTitle.isChecked())
 	        	mBuilder.setContentTitle("<ContentTitle>");
+	        //if (cbsetDeleteIntent.isChecked())
+	        	//mBuilder.setDeleteIntent();//this is not called when notification is cancelled with .cancel(...), not sure what happens 
 	        if (cbsetNumber.isChecked())
 	        	mBuilder.setNumber(42);
 	    	if (cbsetOngoing.isChecked())
 	    		mBuilder.setOngoing(true);
+	    	if (cbsetShowWhen.isChecked())
+	    		mBuilder.setShowWhen(false);
 	        if (cbsetStyle.isChecked())
 	        	mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText("<BigText>"));
 	        if (cbsetSubtext.isChecked())
@@ -303,7 +366,7 @@ public class MainActivity extends Activity {
 	        Log.i(TAG, "App version changed.");
 	        return "";
 	    }
-	    System.out.println(registrationId);
+	    //Log.i(TAG,"getRegistrationId:" + registrationId);
 	    return registrationId;
 	}
 	
@@ -334,6 +397,7 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+	    //getMenuInflater().inflate(R.menu.main_activity_actions, menu);
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
